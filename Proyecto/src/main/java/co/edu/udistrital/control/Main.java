@@ -6,6 +6,8 @@ package co.edu.udistrital.control;
 
 import co.edu.udistrital.model.BancoCandidato;
 import co.edu.udistrital.model.Candidato;
+import co.edu.udistrital.control.*;
+import java.util.*;
 
 /**
  *
@@ -14,60 +16,78 @@ import co.edu.udistrital.model.Candidato;
 public class Main {
     public static void main(String[] args) {
         int N = 2;           // número de candidatos
-        int M = 10000;       // tamaño de cada característica (prueba, súbelo a 1M si quieres)
-        String distribucion = "aleatoria";
+        int M = 100000;       // tamaño de cada característica
+        int k = 5;              // numero de repeticiones para cada experimento
+        String [] distribuciones = {"aleatoria", "casiordenada", "inversa"};
+        
+        long semilla = 1234L;
 
-        // Generar candidatos
-        ControlCandidato control = new ControlCandidato(1234L);
-        BancoCandidato banco = control.generarCandidatos(N, M, distribucion);
+        for (String distribucion : distribuciones) {
+            System.out.println("\n=== PRUEBA para DISTRIBUCION: " + distribucion + " ===");
 
-        // Recorrer candidatos
-        for (Candidato c : banco.getCandidatos()) {
-            System.out.println("\n=== Candidato " + c.getId() + " ===");
+            for (int caracteristica = 0; caracteristica < 5; caracteristica++) {
+                System.out.println("-- Caracteristica #" + (caracteristica + 1) + " --");
+                List<Long> tiempos = new ArrayList<>();
+                List<Long> comparaciones = new ArrayList<>();
+                List<Long> intercambios = new ArrayList<>();
 
-            // Mostrar primeros 10 valores de la primera característica antes de ordenar
-            System.out.print("Característica 1 antes: ");
-            for (int i = 0; i < 10; i++) {
-                System.out.print(c.getCaracteristicas().get(0).get(i) + " ");
+                for (int rep = 0; rep < k; rep++) {
+                    ControlCandidato control = new ControlCandidato(semilla + rep);
+                    BancoCandidato banco = control.generarCandidatos(N, M, distribucion);
+
+                    for (int cand = 0; cand < N; cand++) {
+                        Candidato c = banco.getCandidatos().get(cand);
+                        List<Integer> datos = new ArrayList<>(c.getCaracteristicas().get(caracteristica));
+                        ResultadoOrdenamiento res;
+                        switch (caracteristica) {
+                            case 0: res = Organizador.burbuja(datos); break;
+                            case 1: res = Organizador.insercion(datos); break;
+                            case 2: res = Organizador.merge(datos); break;
+                            case 3: res = Organizador.seleccion(datos); break;
+                            case 4: res = Organizador.quick(datos); break;
+                            default: res = Organizador.burbuja(datos);
+                        }
+                        tiempos.add(res.getTiempoMs());
+                        comparaciones.add(res.getComparaciones());
+                        intercambios.add(res.getIntercambios());
+                        // Mostrar los valores individuales de esta corrida/candidato
+                        System.out.println("  Rep " + (rep + 1) + " - Candidato " + (cand + 1) + 
+                                           ": Tiempo (ms)=" + res.getTiempoMs() + 
+                                           " Comparaciones=" + res.getComparaciones() +
+                                           " Intercambios=" + res.getIntercambios());
+                    }
+                }
+                // Mostrar listas globales (todas las repeticiones y candidatos)
+                System.out.println("  [Todos] Tiempos (ms):      " + tiempos);
+                System.out.println("  [Todos] Comparaciones:     " + comparaciones);
+                System.out.println("  [Todos] Intercambios:      " + intercambios);
+
+                System.out.println("  Tiempo (ms): Mediana=" + mediana(tiempos) +
+                                   ", Rango Intercuartilico=" + rangoIntercuartilico(tiempos));
+                System.out.println("  Comparaciones: Mediana=" + mediana(comparaciones) +
+                                   ", Rango Intercuartilico=" + rangoIntercuartilico(comparaciones));
+                System.out.println("  Intercambios: Mediana=" + mediana(intercambios) +
+                                   ", Rango Intercuartilico=" + rangoIntercuartilico(intercambios));
             }
-            System.out.println("...");
-
-            // 1. Burbuja en característica 1
-            ResultadoOrdenamiento r1 = Organizador.burbuja(c.getCaracteristicas().get(0));
-            System.out.println("Burbuja -> Comparaciones: " + r1.getComparaciones() +
-                               ", Intercambios: " + r1.getIntercambios() +
-                               ", Tiempo: " + r1.getTiempoMs() + " ms");
-
-            // 2. Inserción en característica 2
-            ResultadoOrdenamiento r2 = Organizador.insercion(c.getCaracteristicas().get(1));
-            System.out.println("Inserción -> Comparaciones: " + r2.getComparaciones() +
-                               ", Intercambios: " + r2.getIntercambios() +
-                               ", Tiempo: " + r2.getTiempoMs() + " ms");
-
-            // 3. Merge en característica 3
-            ResultadoOrdenamiento r3 = Organizador.merge(c.getCaracteristicas().get(2));
-            System.out.println("Merge -> Comparaciones: " + r3.getComparaciones() +
-                               ", Intercambios: " + r3.getIntercambios() +
-                               ", Tiempo: " + r3.getTiempoMs() + " ms");
-
-            // 4. Selección en característica 4
-            ResultadoOrdenamiento r4 = Organizador.seleccion(c.getCaracteristicas().get(3));
-            System.out.println("Selección -> Comparaciones: " + r4.getComparaciones() +
-                               ", Intercambios: " + r4.getIntercambios() +
-                               ", Tiempo: " + r4.getTiempoMs() + " ms");
-
-            // 5. Quick en característica 5
-            ResultadoOrdenamiento r5 = Organizador.quick(c.getCaracteristicas().get(4));
-            System.out.println("Quick -> Comparaciones: " + r5.getComparaciones() +
-                               ", Intercambios: " + r5.getIntercambios() +
-                               ", Tiempo: " + r5.getTiempoMs() + " ms");
-
-            // Mostrar primeros 10 valores de la primera característica después de ordenar
-            System.out.print("Característica 1 después (Burbuja): ");
-            for (int i = 0; i < 10; i++) {
-                System.out.print(c.getCaracteristicas().get(0).get(i) + " ");
-            }
-            System.out.println("...");
         }
+    }
+
+    // Función para calcular la mediana de una lista de números
+    public static long mediana(List<Long> valores) {
+        Collections.sort(valores);
+        int n = valores.size();
+        if (n % 2 == 0)
+            return (valores.get(n/2 - 1) + valores.get(n/2)) / 2;
+        else
+            return valores.get(n/2);
+    }
+
+    // Función para calcular el rango intercuartílico
+    public static long rangoIntercuartilico(List<Long> valores) {
+        Collections.sort(valores);
+        int n = valores.size();
+        long q1 = valores.get(n/4);
+        long q3 = valores.get((3*n)/4);
+        return q3 - q1;
     }
 }
