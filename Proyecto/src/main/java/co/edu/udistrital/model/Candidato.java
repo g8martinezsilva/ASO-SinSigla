@@ -4,41 +4,32 @@
  */
 package co.edu.udistrital.model;
 
-import java.util.Random;
+import java.util.*;
 
 /**
  *
  * @author Jhon
  */
 
-import java.util.ArrayList;
-
-import java.util.List;
-
 public class Candidato {
-
     private int id;
-    // Cada característica es una lista de valores enteros
     private List<List<Integer>> caracteristicas;
 
     public Candidato(int id) {
         this.id = id;
         this.caracteristicas = new ArrayList<>();
     }
-
+    
     public int getId() {
-        return id;
+        return id; 
     }
-
+    
     public List<List<Integer>> getCaracteristicas() {
         return caracteristicas;
     }
 
     @Override
     public String toString() {
-        return "Candidato{"
-                + "id=" + id
-                + ", caracteristicas=" + caracteristicas
-                + '}';
+        return "Candidato{id=" + id + ", caracteristicas=" + caracteristicas + '}';
     }
 }

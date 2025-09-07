@@ -1,7 +1,8 @@
 co\edu\udistrital\control\Main.class
-co\edu\udistrital\control\Organizador$Contador.class
+co\edu\udistrital\model\Estadisticas.class
 co\edu\udistrital\control\Organizador.class
 co\edu\udistrital\control\ControlCandidato.class
+co\edu\udistrital\view\VistaResultados.class
 co\edu\udistrital\control\ResultadoOrdenamiento.class
 co\edu\udistrital\model\BancoCandidato.class
 co\edu\udistrital\model\Candidato.class

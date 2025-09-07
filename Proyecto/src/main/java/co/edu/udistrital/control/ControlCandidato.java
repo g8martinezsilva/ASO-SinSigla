@@ -4,8 +4,7 @@
  */
 package co.edu.udistrital.control;
 
-import co.edu.udistrital.model.BancoCandidato;
-import co.edu.udistrital.model.Candidato;
+import co.edu.udistrital.model.*;
 import java.util.*;
 
 /**
@@ -14,48 +13,37 @@ import java.util.*;
  */
 
 public class ControlCandidato {
-
     private Random random;
 
     public ControlCandidato(long semilla) {
-        this.random = new Random(semilla); // semilla fija
+        this.random = new Random(semilla);
     }
 
-    // Generar N candidatos con M eventos y una distribución dada
     public BancoCandidato generarCandidatos(int N, int M, String distribucion) {
         BancoCandidato banco = new BancoCandidato();
-
         for (int i = 1; i <= N; i++) {
             Candidato c = new Candidato(i);
-
-            // Cada candidato tiene 5 características
             for (int j = 0; j < 5; j++) {
                 List<Integer> valores = generarValores(M, distribucion);
                 c.getCaracteristicas().add(valores);
             }
-
             banco.agregarCandidato(c);
         }
         return banco;
     }
 
-    // Genera una lista de M valores según la distribución
     private List<Integer> generarValores(int M, String distribucion) {
         List<Integer> valores = new ArrayList<>();
-
         switch (distribucion.toLowerCase()) {
             case "aleatoria":
                 for (int i = 0; i < M; i++) {
                     valores.add(random.nextInt(M) + 1);
                 }
                 break;
-
-            
             case "casiordenada":
                 for (int i = 1; i <= M; i++) {
                     valores.add(i);
                 }
-                
                 int perturbaciones = Math.max(1, M / 10);
                 for (int i = 0; i < perturbaciones; i++) {
                     int idx1 = random.nextInt(M);
@@ -63,17 +51,14 @@ public class ControlCandidato {
                     Collections.swap(valores, idx1, idx2);
                 }
                 break;
-
             case "inversa":
                 for (int i = M; i >= 1; i--) {
                     valores.add(i);
                 }
                 break;
-
             default:
                 throw new IllegalArgumentException("Distribución no válida: " + distribucion);
         }
-
         return valores;
     }
 }

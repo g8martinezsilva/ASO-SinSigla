@@ -4,32 +4,28 @@
  */
 package co.edu.udistrital.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  *
  * @author Jhon
  */
 
-
 public class BancoCandidato {
-
     private List<Candidato> candidatos;
 
     public BancoCandidato() {
         this.candidatos = new ArrayList<>();
     }
-
+    
     public void agregarCandidato(Candidato c) {
         candidatos.add(c);
     }
-
+    
     public List<Candidato> getCandidatos() {
         return candidatos;
     }
-
+    
     public int getTotalCandidatos() {
         return candidatos.size();
     }

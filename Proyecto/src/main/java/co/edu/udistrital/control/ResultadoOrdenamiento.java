@@ -9,25 +9,24 @@ package co.edu.udistrital.control;
  * @author Jhon
  */
 public class ResultadoOrdenamiento {
-
     private long comparaciones;
     private long intercambios;
     private long tiempoMs;
 
-    public ResultadoOrdenamiento(long comparaciones, long intercambios, long tiempoMs) {
+    public ResultadoOrdenamiento(long comparaciones, long intercambios, long milisegundos) {
         this.comparaciones = comparaciones;
         this.intercambios = intercambios;
-        this.tiempoMs = tiempoMs;
+        this.tiempoMs = milisegundos;
     }
-
+    
     public long getComparaciones() {
         return comparaciones;
     }
-
+    
     public long getIntercambios() {
         return intercambios;
     }
-
+    
     public long getTiempoMs() {
         return tiempoMs;
     }
