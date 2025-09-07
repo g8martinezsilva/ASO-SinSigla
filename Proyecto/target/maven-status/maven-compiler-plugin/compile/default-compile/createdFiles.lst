@@ -1,6 +1,7 @@
 co\edu\udistrital\control\Main.class
 co\edu\udistrital\model\Estadisticas.class
 co\edu\udistrital\control\Organizador.class
+co\edu\udistrital\control\Main$1.class
 co\edu\udistrital\control\ControlCandidato.class
 co\edu\udistrital\view\VistaResultados.class
 co\edu\udistrital\control\ResultadoOrdenamiento.class
